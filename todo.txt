@@ -1,0 +1,4 @@
+- Verificar que no exista ya el fichero imagen
+- Resolver problema con videoGenerator.js
+- Implementar motionSimulation.js e integrarlo con main.js
+- Generar visor.js para visualizar el video. (usar antes una utilidad de ver videos)
