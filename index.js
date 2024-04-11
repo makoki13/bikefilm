@@ -1,9 +1,11 @@
+const { exit } = require('process');
 const gpxParser = require('./gpxParser');
 const streetViewDownloader = require('./streetViewDownloader');
 const videoGenerator = require('./videoGenerator');
 
 const gpxFilePath = 'rutas/ejemplo.gpx'; // Ruta al archivo GPX
-const apiKey = 'AIzaSyBo-8i4j7lBIuzEQ2EFEJ2ou8aU5AB1ePs'; // API de Google Maps
+
+const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
 const imagePaths = [];
 
