@@ -28,3 +28,56 @@
  *   - La precisión y fiabilidad de las coordenadas extraídas pueden variar dependiendo de la calidad
  *     y la cantidad de información proporcionada en el archivo GPX.
  */
+
+const fs = require('fs');
+const xml2js = require('xml2js');
+
+// Función para leer y analizar un archivo GPX
+function parseGPX(filePath) {
+    return new Promise((resolve, reject) => {
+        // Leer el archivo GPX
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            
+            // Parsear el archivo XML a un objeto JavaScript
+            xml2js.parseString(data, (err, result) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                try {
+                    // Extraer las coordenadas del resultado
+                    const coordinates = extractCoordinates(result);
+                    resolve(coordinates);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        });
+    });
+}
+
+// Función para extraer las coordenadas de un archivo GPX parseado
+function extractCoordinates(gpxData) {
+    const coordinates = [];
+
+    // Acceder al elemento que contiene las coordenadas (usualmente <trk><trkseg><trkpt>)
+    const trackPoints = gpxData.gpx.trk[0].trkseg[0].trkpt;
+
+    // Iterar sobre cada punto de seguimiento y extraer las coordenadas
+    trackPoints.forEach(point => {
+        const latitude = parseFloat(point.$.lat);
+        const longitude = parseFloat(point.$.lon);
+        coordinates.push({ latitude, longitude });
+    });
+
+    return coordinates;
+}
+
+module.exports = {
+    parseGPX
+};

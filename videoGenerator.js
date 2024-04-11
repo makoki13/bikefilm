@@ -30,3 +30,40 @@
  *   - Se recomienda ajustar adecuadamente la velocidad del vehículo y la duración de las imágenes
  *     para lograr un efecto de movimiento realista en el video generado.
  */
+
+const ffmpeg = require('fluent-ffmpeg');
+
+// Función para generar un video a partir de una lista de imágenes
+function generateVideo(imageList, outputFilename, fps = 30) {
+    return new Promise((resolve, reject) => {
+        try {
+            // Crear un nuevo comando ffmpeg
+            const command = ffmpeg();
+
+            // Agregar cada imagen al comando ffmpeg como un fotograma
+            imageList.forEach(imagePath => {
+                command.input(imagePath);
+            });
+
+            // Configurar la velocidad de fotogramas (FPS) del video
+            command.fps(fps);
+
+            // Configurar la salida del video
+            command.output(outputFilename)
+                .on('end', () => {
+                    resolve(outputFilename);
+                })
+                .on('error', (error) => {
+                    reject(error);
+                })
+                .run();
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+module.exports = {
+    generateVideo
+};
+

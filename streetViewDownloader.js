@@ -30,3 +30,27 @@
  *   - Se recomienda revisar y respetar los términos de servicio de Google Maps al utilizar
  *     la API de Street View para descargar imágenes.
  */
+
+const axios = require('axios');
+
+// Función para descargar una imagen de Google Street View
+async function downloadStreetViewImage(latitude, longitude, apiKey, options = {}) {
+    const { size = '600x300', heading = 0, pitch = 0 } = options;
+
+    try {
+        // Construir la URL de la imagen de Street View
+        const url = `https://maps.googleapis.com/maps/api/streetview?size=${size}&location=${latitude},${longitude}&heading=${heading}&pitch=${pitch}&key=${apiKey}`;
+
+        // Realizar la solicitud HTTP para descargar la imagen
+        const response = await axios.get(url, { responseType: 'arraybuffer' });
+
+        // Devolver la imagen como un buffer de Node.js
+        return Buffer.from(response.data, 'binary');
+    } catch (error) {
+        throw new Error(`Error al descargar imagen de Street View: ${error.message}`);
+    }
+}
+
+module.exports = {
+    downloadStreetViewImage
+};
